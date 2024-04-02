@@ -3,8 +3,14 @@ import random
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import heapq
 
 # Elite
+
+def elite(population: list[(float,Character)], selection_amount: int) -> list[Character]:
+
+    selection = sorted(population,reverse=True)[:selection_amount]
+    return selection
 
 # Ruleta
 
