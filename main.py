@@ -1,5 +1,6 @@
 from src.classes import Class
 from src.functions import performance, print_points, random_character
+from src.selection import roulette_selection, boltzmann_selection
 from heapq import heappush
 
 if __name__ == "__main__":
@@ -18,3 +19,10 @@ if __name__ == "__main__":
 
     print(perf)
     print(fitness)
+
+    print("roulette_selection")
+    sel = roulette_selection(fitness, 10)
+    print(sel)
+    sel = boltzmann_selection(perf, 10)
+    print("boltzmann_selection")
+    print(sel)
