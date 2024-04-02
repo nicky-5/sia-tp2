@@ -15,5 +15,6 @@ if __name__ == "__main__":
                                     character.points, character.height), character))
     total = sum(item[0] for item in perf)
     fitness = list(map(lambda pair: (pair[0]/total, pair[1]), perf))
+
     print(perf)
     print(fitness)
