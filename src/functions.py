@@ -1,9 +1,11 @@
 from __future__ import annotations
+from dataclasses import dataclass
+
+import numpy as np
+
 import src.items as items
 import src.player as player
 import src.classes as classes
-import random
-import numpy as np
 
 from src.classes import Class
 
@@ -18,41 +20,36 @@ STATS_FUNCTIONS = (
 )
 
 
+@dataclass(order=True)
 class Character:
-    def __init__(self, class_: Class, points: PointsTuple, height: int):
-        self.class_ = class_
-        self.points = points
-        self.height = height
+    class_: Class
+    points: PointsTuple
+    height: float
 
-    def __lt__(self, _: Character) -> bool:
-        return False
+    def random(class_: Class) -> Character:
+        height = np.random.uniform(player.HEIGHT_MIN, player.HEIGHT_MAX)
+        array = np.random.uniform(0, 1, len(STATS_FUNCTIONS))
 
+        if sum(array) == 0.0:
+            array = np.ones(len(STATS_FUNCTIONS))
 
-def performance(class_: Class, item_points: PointsTuple, height: float) -> float:
-    def apply_pair(pair): return pair[0](pair[1])
+        points = items.POINTS_SUM * array / sum(array)
 
-    stats = map(apply_pair, zip(STATS_FUNCTIONS, item_points, strict=True))
-    strength, agility, proficiency, resistance, health = stats
+        return Character(class_, points, height)
 
-    atk_modifier = player.atk_modifier(height)
-    def_modifier = player.def_modifier(height)
+    def performance(self) -> float:
+        def apply_pair(pair): return pair[0](pair[1])
 
-    attack = player.attack(strength, agility, proficiency, atk_modifier)
-    defense = player.defense(proficiency, resistance, health, def_modifier)
+        stats = map(apply_pair, zip(STATS_FUNCTIONS, self.points, strict=True))
+        strength, agility, proficiency, resistance, health = stats
 
-    return classes.performance(class_, attack, defense)
+        atk_modifier = player.atk_modifier(self.height)
+        def_modifier = player.def_modifier(self.height)
 
+        attack = player.attack(strength, agility, proficiency, atk_modifier)
+        defense = player.defense(proficiency, resistance, health, def_modifier)
 
-def random_character(class_: Class):
-    height = random.uniform(player.HEIGHT_MIN, player.HEIGHT_MAX)
-    s = np.zeros(5)
-
-    while (sum(s) == 0.0):
-        s = np.random.uniform(0, 1, 5)
-
-    stats = items.POINTS_SUM * s / sum(s)
-
-    return Character(class_, stats, height)
+        return classes.performance(self.class_, attack, defense)
 
 
 def print_points(items: PointsTuple):

@@ -1,13 +1,14 @@
-from src.functions import Character
 import random
+
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import heapq
+
+from src.functions import Character
 
 # Elite
 
-def elite(population: list[(float,Character)], selection_amount: int) -> list[Character]:
+def elite(population: list[tuple[float,Character]], selection_amount: int) -> list[Character]:
 
     selection = sorted(population,reverse=True)[:selection_amount]
     return selection
@@ -15,7 +16,7 @@ def elite(population: list[(float,Character)], selection_amount: int) -> list[Ch
 # Ruleta
 
 
-def roulette_selection(population: list[(float, Character)], selection_amount: int) -> list[Character]:
+def roulette_selection(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
     cumulative_probs = []
     cumulative_prob = 0.0
 
@@ -54,7 +55,7 @@ def boltzmann_selection(perf, t: int):
     return sel
 
 
-def graph_selection(fitness: [(float, Character)], sel: [float, Character]):
+def graph_selection(fitness: list[tuple[float, Character]], sel: list[float, Character]):
     plt.rcParams['figure.dpi'] = 200
     y_values = [f[0] for f in fitness]
     y_values = sorted(y_values, reverse=True)
@@ -85,5 +86,27 @@ def graph_selection(fitness: [(float, Character)], sel: [float, Character]):
 
 
 # Torneos (ambas versiones)
+    
+def tournament_det(population: list[tuple[float, Character]], winners: int, participants: int = 10) -> list[Character]:
+    ret: list[Character] = list()
+
+    for _ in range(winners):
+        sample = random.choices(population, k=participants)
+        winner = max(sample, key=lambda x : x[0])
+        ret.append(winner[1])
+
+    return ret
+
+
+def tournament_prob(population: list[tuple[float, Character]], winners: int, threshold: float = 0.8) -> list[Character]:
+    ret: list[Character] = list()
+
+    for _ in range(winners):
+        sample = random.choices(population, k=2)
+        selector = max if random.random() < threshold else min
+        winner = selector(sample, key=lambda x : x[0])
+        ret.append(winner[1])
+
+    return ret
 
 # Ranking
