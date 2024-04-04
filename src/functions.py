@@ -10,6 +10,7 @@ import src.classes as classes
 from src.classes import Class
 
 PointsTuple = tuple[float, float, float, float, float]
+Allels = [float, float, float, float, float, float]
 
 STATS_FUNCTIONS = (
     items.strength,
@@ -25,6 +26,11 @@ class Character:
     class_: Class
     points: PointsTuple
     height: float
+
+    def __init__(self, class_: Class, points: PointsTuple, height: float):
+        self.class_ = class_
+        self.points = points
+        self.height = height
 
     def random(class_: Class) -> Character:
         height = np.random.uniform(player.HEIGHT_MIN, player.HEIGHT_MAX)
@@ -50,6 +56,19 @@ class Character:
         defense = player.defense(proficiency, resistance, health, def_modifier)
 
         return classes.performance(self.class_, attack, defense)
+
+    def get_allels(self) -> Allels:
+        allels = [
+            self.points[0],
+            self.points[1],
+            self.points[2],
+            self.points[3],
+            self.points[4],
+            self.height
+        ]
+        print("points: ", self.points)
+        print("allels: ", allels)
+        return allels
 
 
 def print_points(items: PointsTuple):

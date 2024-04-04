@@ -6,16 +6,15 @@ import seaborn as sns
 
 from src.functions import Character
 
+
 # Elite
+def elite(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
 
-def elite(population: list[tuple[float,Character]], selection_amount: int) -> list[Character]:
-
-    selection = sorted(population,reverse=True)[:selection_amount]
+    selection = sorted(population, reverse=True)[:selection_amount]
     return selection
 
+
 # Ruleta
-
-
 def roulette_selection(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
     cumulative_probs = []
     cumulative_prob = 0.0
@@ -45,8 +44,6 @@ def roulette_selection(population: list[tuple[float, Character]], selection_amou
 # Universal
 
 # Boltzmann
-
-
 def boltzmann_selection(perf, t: int):
     total = sum(np.exp(item[0] / t) for item in perf)
     fitness = list(
@@ -79,20 +76,19 @@ def graph_selection(fitness: list[tuple[float, Character]], sel: list[float, Cha
             if y_val == tup[0]:
                 selected_x_values.append(i)
             i += 1
-    sns.scatterplot(x=selected_x_values, y=selected_y_values, color='red', marker='+',
-                    label='Selection')  # Scatterplot for selected points (in red)
+    sns.scatterplot(x=selected_x_values, y=selected_y_values, color='red',
+                    marker='+', label='Selection')
 
     plt.show()
 
 
 # Torneos (ambas versiones)
-    
 def tournament_det(population: list[tuple[float, Character]], winners: int, participants: int = 10) -> list[Character]:
     ret: list[Character] = list()
 
     for _ in range(winners):
         sample = random.choices(population, k=participants)
-        winner = max(sample, key=lambda x : x[0])
+        winner = max(sample, key=lambda x: x[0])
         ret.append(winner[1])
 
     return ret
@@ -104,7 +100,7 @@ def tournament_prob(population: list[tuple[float, Character]], winners: int, thr
     for _ in range(winners):
         sample = random.choices(population, k=2)
         selector = max if random.random() < threshold else min
-        winner = selector(sample, key=lambda x : x[0])
+        winner = selector(sample, key=lambda x: x[0])
         ret.append(winner[1])
 
     return ret
