@@ -4,9 +4,10 @@ from src.crossover import (single_point_crossover,
                            double_point_crossover,
                            ring_crossover,
                            uniform_crossover)
-from src.selection import (elite,
+from src.selection import (elite_selection,
                            roulette_selection,
                            boltzmann_selection,
+                           universal_selection,
                            tournament_prob,
                            tournament_det)
 from src.replacement import traditional_replacement, youth_favoured_replacement
@@ -40,11 +41,11 @@ class Config:
         self.crossover_method = config["crossover_method"]
 
 
-selection_methods = defaultdict(lambda: elite)
+selection_methods = defaultdict(lambda: elite_selection)
 selection_methods.update({
-    'elite': elite,
+    'elite': elite_selection,
     'roulette': roulette_selection,
-    # 'universal': universal_selection, # TODO
+    'universal': universal_selection, # TODO
     'boltzmann': boltzmann_selection,
     'tournament_det': tournament_det,
     'tournament_prob': tournament_prob,

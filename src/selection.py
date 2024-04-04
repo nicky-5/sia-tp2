@@ -1,5 +1,5 @@
 import random
-
+from src.classes import performance
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -12,10 +12,12 @@ Population = list[tuple[float, Character]]
 SelectionFunction = Callable[[Population, int], list[Character]]
 
 
-# Elite
-def elite(population: Population, selection_amount: int) -> list[Character]:
 
-    selection = sorted(population, reverse=True)[:selection_amount]
+# Elite
+def elite_selection(population: list[(float,Character)], selection_amount: int) -> list[Character]:
+    total = sum(item[0] for item in population)
+    fitness = list(map(lambda pair: (pair[0]/total, pair[1]), population))
+    selection = sorted(fitness, reverse=True)[:selection_amount]
     return selection
 
 
@@ -52,6 +54,41 @@ def roulette(population: list[tuple[float, Character]], selection_amount: int) -
     return selections
 
 # Universal
+
+#falta cambiar el r_j por el de universal, sigue igual a roullette
+def universal_selection(population: list[(float, Character)], selection_amount: int) -> list[Character]:
+    total = sum(item[0] for item in population)
+    fitness = list(map(lambda pair: (pair[0]/total, pair[1]), population))
+    
+    cumulative_probs = []
+    cumulative_prob = 0.0
+
+    for tup in fitness:
+        cumulative_probs.append((cumulative_prob + tup[0]))
+        # agrego la prob a la lista
+        cumulative_prob += tup[0]
+
+    selections = []
+    random_init = random.random()
+    j = 0
+    
+    for _ in range(selection_amount):
+        random_value = (random_init + j) / selection_amount - 1
+        j += 1
+
+        # Encuentra el individuo correspondiente al valor aleatorio
+        selected_individual = None
+        for i, cumulative_prob in enumerate(cumulative_probs):
+            if random_value <= cumulative_prob:
+                selected_individual = fitness[i]
+                break
+
+        if selected_individual is not None:
+            selections.append(selected_individual)
+
+
+
+    return selections
 
 
 # Boltzmann
@@ -95,12 +132,16 @@ def graph_selection(fitness: list[tuple[float, Character]], sel: list[float, Cha
 
 # Torneos (ambas versiones)
 def tournament_det(population: list[tuple[float, Character]], winners: int, participants: int = 10) -> list[Character]:
-    ret: list[Character] = list()
+    total = sum(item[0] for item in population)
+    fitness = list(map(lambda pair: (pair[0]/total, pair[1]), population))
+    
+    #ret: list[Character] = list()
+    ret = []
 
     for _ in range(winners):
-        sample = random.choices(population, k=participants)
+        sample = random.choices(fitness, k=participants)
         winner = max(sample, key=lambda x: x[0])
-        ret.append(winner[1])
+        ret.append(winner)
 
     return ret
 
@@ -112,7 +153,7 @@ def tournament_prob(population: list[tuple[float, Character]], winners: int, thr
         sample = random.choices(population, k=2)
         selector = max if random.random() < threshold else min
         winner = selector(sample, key=lambda x: x[0])
-        ret.append(winner[1])
+        ret.append(winner)
 
     return ret
 

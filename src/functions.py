@@ -32,6 +32,12 @@ class Character:
         self.points = points
         self.height = height
 
+    def __eq__(self, other):
+        if isinstance(other, Character):
+            return np.array_equal(self.points, other.points) and self.height == other.height
+        return False
+
+
     def random(class_: Class) -> Character:
         height = np.random.uniform(player.HEIGHT_MIN, player.HEIGHT_MAX)
         array = np.random.uniform(0, 1, len(STATS_FUNCTIONS))
