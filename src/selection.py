@@ -6,9 +6,14 @@ import seaborn as sns
 
 from src.functions import Character
 
+from typing import Callable
+
+Population = list[tuple[float, Character]]
+SelectionFunction = Callable[[Population, int], list[Character]]
+
 
 # Elite
-def elite(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
+def elite(population: Population, selection_amount: int) -> list[Character]:
 
     selection = sorted(population, reverse=True)[:selection_amount]
     return selection
@@ -16,6 +21,12 @@ def elite(population: list[tuple[float, Character]], selection_amount: int) -> l
 
 # Ruleta
 def roulette_selection(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
+    total = sum(item[0] for item in population)
+    fitness = list(map(lambda pair: (pair[0]/total, pair[1]), population))
+    return roulette(fitness, selection_amount)
+
+
+def roulette(population: list[tuple[float, Character]], selection_amount: int) -> list[Character]:
     cumulative_probs = []
     cumulative_prob = 0.0
 
@@ -40,15 +51,15 @@ def roulette_selection(population: list[tuple[float, Character]], selection_amou
 
     return selections
 
-
 # Universal
+
 
 # Boltzmann
 def boltzmann_selection(perf, t: int):
     total = sum(np.exp(item[0] / t) for item in perf)
     fitness = list(
         map(lambda pair: (np.exp(pair[0]/t)/total, pair[1]), perf))
-    sel = roulette_selection(fitness, t)
+    sel = roulette(fitness, t)
     return sel
 
 

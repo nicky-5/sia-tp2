@@ -1,15 +1,15 @@
 {
     "population_size": 100,
+    "child_rate": 0.5,
     "mutation_rate": 0.05,
-    "crossover_rate": 0.8,
-    "max_generations": 1000,
+    "max_generations": 100,
     "A": 0.4,
     "selection_method_1": "boltzmann",
-    "selection_method_2": "roulette",
+    "selection_method_2": "boltzmann",
     "B": 0.4,
-    "replacement_method": "traditional",
+    "replacement_method": "youth_favoured",
     "replacement_selection_method_1": "boltzmann",
-    "replacement_selection_method_2": "roulette",
+    "replacement_selection_method_2": "boltzmann",
     "crossover_method": "single_point"
 }
 
