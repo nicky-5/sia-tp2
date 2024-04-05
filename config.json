@@ -1,15 +1,19 @@
 {
     "population_size": 100,
-    "child_rate": 0.9,
+    "child_rate": 0.5,
     "mutation_rate": 0.05,
+    "mutation_delta": 0.05,
+    "mutation_method": "multi_gene",
+    "gene_to_modify": 5,
+    "uniform_mutation": true,
     "max_generations": 1000,
     "A": 0.4,
-    "selection_method_1": "boltzmann",
-    "selection_method_2": "roulette",
+    "selection_method_1": "elite",
+    "selection_method_2": "elite",
     "B": 0.4,
     "replacement_method": "youth_favoured",
-    "replacement_selection_method_1": "tournament_prob",
-    "replacement_selection_method_2": "tournament_det",
-    "crossover_method": "uniform"
+    "replacement_selection_method_1": "elite",
+    "replacement_selection_method_2": "elite",
+    "crossover_method": "double_point"
 }
 

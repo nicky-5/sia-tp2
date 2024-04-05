@@ -10,7 +10,10 @@ from src.selection import (elite_selection,
                            universal_selection,
                            tournament_prob,
                            tournament_det)
+from src.mutation import mutate, multi_gene_mutation, gene_mutation
 from src.replacement import traditional_replacement, youth_favoured_replacement
+from src.items import POINTS_SUM
+from src.player import HEIGHT_MAX, HEIGHT_MIN
 
 from heapq import heappush
 from collections import defaultdict
@@ -30,6 +33,10 @@ class Config:
         self.population_size = config["population_size"]
         self.child_rate = config["child_rate"]
         self.mutation_rate = config["mutation_rate"]
+        self.mutation_delta = config["mutation_delta"]
+        self.mutation_method = config["mutation_method"]
+        self.gene_to_modify = config["gene_to_modify"]
+        self.uniform_mutation = config["uniform_mutation"]
         self.max_generations = config["max_generations"]
         self.a = config["A"]
         self.selection_method_1 = config["selection_method_1"]
@@ -61,9 +68,15 @@ crossover_methods.update({
 })
 
 replacement_method = defaultdict(lambda: youth_favoured_replacement)
-crossover_methods.update({
+replacement_method.update({
     'youth_favoured': youth_favoured_replacement,
     'traditional': traditional_replacement
+})
+
+mutation_method = defaultdict(lambda: gene_mutation)
+mutation_method.update({
+    'gene': gene_mutation,
+    'multi_gene': multi_gene_mutation
 })
 
 
@@ -105,18 +118,42 @@ if __name__ == "__main__":
                 parents[i].get_allels(), parents[i + 1].get_allels())
 
             # Mutation of Allels
+            child_1_allels = mutate(
+                config.uniform_mutation,
+                mutation_method[config.mutation_method],
+                child_1_allels,
+                config.mutation_rate,
+                config.mutation_delta,
+                gen_i + 1,
+                config.gene_to_modify
+            )
+
+            child_2_allels = mutate(
+                config.uniform_mutation,
+                mutation_method[config.mutation_method],
+                child_2_allels,
+                config.mutation_rate,
+                config.mutation_delta,
+                gen_i + 1,
+                config.gene_to_modify
+            )
 
             # Normalization of Allels
             total_child_1 = sum(child_1_allels[0:5])
-            child_1_points = [child * 150 / total_child_1 for child in child_1_allels[0:5]]
+            child_1_points = [child * POINTS_SUM / total_child_1 for child in child_1_allels[0:5]]
             total_child_2 = sum(child_2_allels[0:5])
-            child_2_points = [child * 150 / total_child_2 for child in child_2_allels[0:5]]
+            child_2_points = [child * POINTS_SUM / total_child_2 for child in child_2_allels[0:5]]
+
+            def normalize_height(height):
+                return max(HEIGHT_MIN, min(HEIGHT_MAX, height))
+            child_1_heigth = normalize_height(child_1_allels[-1])
+            child_2_heigth = normalize_height(child_2_allels[-1])
 
             child_1 = Character(parents[i].class_, tuple(
-                child_1_points), child_1_allels[-1])
+                child_1_points), child_1_heigth)
 
             child_2 = Character(parents[i + 1].class_, tuple(
-                child_2_points), child_2_allels[-1])
+                child_2_points), child_2_heigth)
 
             heappush(children, child_1)
             heappush(children, child_2)
@@ -136,8 +173,14 @@ if __name__ == "__main__":
         generations.append(new_gen)
         print("GENERATION:", gen_i + 1)
 
-    print("LAST GENERATION: ", generations[-1])
+    # print("LAST GENERATION: ", generations[-1])
     best_of_last = max(generations[-1], key=lambda x: x.performance)
+
     print("BEST OF LAST: ", best_of_last)
     print("Best of Last performance: ", best_of_last.performance)
     print(sum(best_of_last.points))
+
+    best_of_all = max((individual for generation in generations for individual in generation), key=lambda x: x.performance)
+    print("BEST OF ALL: ", best_of_all)
+    print("Best of ALL performance: ", best_of_all.performance)
+    print(sum(best_of_all.points))
