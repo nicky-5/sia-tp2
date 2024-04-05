@@ -21,22 +21,26 @@ STATS_FUNCTIONS = (
 )
 
 
-@dataclass(order=True)
+@dataclass(order=False)
 class Character:
     class_: Class
     points: PointsTuple
     height: float
+    performance: float
 
     def __init__(self, class_: Class, points: PointsTuple, height: float):
         self.class_ = class_
         self.points = points
         self.height = height
+        self.performance = self.performance()
 
     def __eq__(self, other):
         if isinstance(other, Character):
             return np.array_equal(self.points, other.points) and self.height == other.height
         return False
 
+    def __lt__(self, other):
+        return self.performance < other.performance
 
     def random(class_: Class) -> Character:
         height = np.random.uniform(player.HEIGHT_MIN, player.HEIGHT_MAX)
@@ -72,8 +76,6 @@ class Character:
             self.points[4],
             self.height
         ]
-        print("points: ", self.points)
-        print("allels: ", allels)
         return allels
 
 
