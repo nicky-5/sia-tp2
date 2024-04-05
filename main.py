@@ -9,6 +9,7 @@ from src.selection import (elite_selection,
                            boltzmann_selection,
                            universal_selection,
                            tournament_prob,
+                           ranking,
                            tournament_det)
 from src.mutation import mutate, multi_gene_mutation, gene_mutation
 from src.replacement import traditional_replacement, youth_favoured_replacement
@@ -56,7 +57,7 @@ selection_methods.update({
     'boltzmann': boltzmann_selection,
     'tournament_det': tournament_det,
     'tournament_prob': tournament_prob,
-    # 'ranking': raking     # TODO
+    'ranking': ranking     # TODO
 })
 
 crossover_methods = defaultdict(lambda: single_point_crossover)

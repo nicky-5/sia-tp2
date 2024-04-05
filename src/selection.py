@@ -3,7 +3,7 @@ from src.classes import performance
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import copy
 from src.functions import Character
 
 from typing import Callable
@@ -156,3 +156,19 @@ def tournament_prob(population: Population, winners: int, threshold: float = 0.8
     return ret
 
 # Ranking
+def ranking(population : Population,selection_amount : int) -> Population:
+    total = sum(character.performance for character in population)
+    ranked_list=list(map(lambda character: (character.performance/total, character), population))
+    ranked_list = sorted(ranked_list,reverse=True)
+    size = len(ranked_list)
+    i = 0
+    new_ranked_list = []
+    for tup in ranked_list:
+        new_ranked_list.append(((size - i)/size,tup[1]))
+        i+=1
+    return roulette(new_ranked_list,selection_amount)
+
+    
+
+
+
