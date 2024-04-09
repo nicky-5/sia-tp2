@@ -12,10 +12,21 @@ Population = list[Character]
 SelectionFunction = Callable[[Population, int], list[Character]]
 
 
+def select(selection_method: SelectionFunction,
+           population: Population,
+           selection_amount: int,
+           boltzmann_temperature: float) -> Population:
+    if selection_method is boltzmann_selection:
+        return boltzmann_selection(population, selection_amount, selection_amount)
+    else:
+        return selection_method(population, selection_amount)
+
+
 # Elite
 def elite_selection(population: Population, selection_amount: int) -> Population:
     total = sum(character.performance for character in population)
-    fitness = list(map(lambda character: (character.performance/total, character), population))
+    fitness = list(map(lambda character: (
+        character.performance/total, character), population))
     selection = sorted(fitness, reverse=True)[:selection_amount]
     return [sel[1] for sel in selection]
 
@@ -23,7 +34,8 @@ def elite_selection(population: Population, selection_amount: int) -> Population
 # Ruleta
 def roulette_selection(population: Population, selection_amount: int) -> Population:
     total = sum(character.performance for character in population)
-    fitness = list(map(lambda character: (character.performance/total, character), population))
+    fitness = list(map(lambda character: (
+        character.performance/total, character), population))
     return roulette(fitness, selection_amount)
 
 
@@ -59,7 +71,8 @@ def roulette(population: Population, selection_amount: int) -> Population:
 
 def universal_selection(population: Population, selection_amount: int) -> Population:
     total = sum(character.performance for character in population)
-    fitness = list(map(lambda character: (character.performance/total, character), population))
+    fitness = list(map(lambda character: (
+        character.performance/total, character), population))
 
     cumulative_probs = []
     cumulative_prob = 0.0
@@ -90,11 +103,11 @@ def universal_selection(population: Population, selection_amount: int) -> Popula
 
 
 # Boltzmann
-def boltzmann_selection(population: Population, t: int) -> Population:
+def boltzmann_selection(population: Population, selection_amount: int, t: int) -> Population:
     total = sum(np.exp(character.performance / t) for character in population)
     fitness = list(
         map(lambda character: (np.exp(character.performance/t)/total, character), population))
-    sel = roulette(fitness, t)
+    sel = roulette(fitness, selection_amount)
     return sel
 
 
@@ -156,19 +169,17 @@ def tournament_prob(population: Population, winners: int, threshold: float = 0.8
     return ret
 
 # Ranking
-def ranking(population : Population,selection_amount : int) -> Population:
+
+
+def ranking(population: Population, selection_amount: int) -> Population:
     total = sum(character.performance for character in population)
-    ranked_list=list(map(lambda character: (character.performance/total, character), population))
-    ranked_list = sorted(ranked_list,reverse=True)
+    ranked_list = list(map(lambda character: (
+        character.performance/total, character), population))
+    ranked_list = sorted(ranked_list, reverse=True)
     size = len(ranked_list)
     i = 0
     new_ranked_list = []
     for tup in ranked_list:
-        new_ranked_list.append(((size - i)/size,tup[1]))
-        i+=1
-    return roulette(new_ranked_list,selection_amount)
-
-    
-
-
-
+        new_ranked_list.append(((size - i)/size, tup[1]))
+        i += 1
+    return roulette(new_ranked_list, selection_amount)
