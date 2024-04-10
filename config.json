@@ -1,5 +1,6 @@
 {
     "population_size": 1000,
+    "population_class": "ARCHER",
     "child_rate": 0.5,
     "mutation_rate": 0.5,
     "mutation_delta": 0.7,
@@ -17,7 +18,7 @@
     "boltzmann_temperature_start": 100,
     "boltzmann_temperature_end": 20,
     "boltzmann_temperature_constant": 0.1,
-    "end_criteria": "content_criteria",
+    "end_criteria": "max_generations",
     "max_generations": 1000,
     "content_criteria_limit": 10,
     "content_criteria_delta": 0.0000001,
