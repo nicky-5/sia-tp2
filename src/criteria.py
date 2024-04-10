@@ -1,3 +1,5 @@
+from typing import List
+from src.functions import Character
 from src.selection import Population
 from dataclasses import dataclass
 
@@ -22,11 +24,35 @@ class MaxGenerations:
 
 # Structure Criteria
 class StructureCriteia:
-    def __init__(self, delta: float):
+    def __init__(self, delta: float, stats_delta: List[float],similar_gen_threshold: int, similar_individual_prop: float):
         self.delta = delta
+        self.stats_delta = stats_delta
+        self.similar_gen_threshold = similar_gen_threshold
+        self.similar_individual_prop = similar_individual_prop
+        self.current_gen = 0
 
     def check(self, state: State):
-        return False
+        def match(individual : Character, other_individual: Character) -> bool:
+            i = 0
+            for stats1, stats2 in zip(individual.get_allels(),other_individual.get_allels()):
+                if(abs(stats1 - stats2) > self.stats_delta[i]):
+                    return False
+                i =+ 1
+            return True
+
+        similar_individuals = 0
+        for individual in state.generations[-1]:
+            for prev_individual in state.generations[-2]:
+                if(match(individual,prev_individual)):
+                    similar_individuals += 1
+                    break
+
+        if similar_individuals >= self.similar_individual_prop * len(state.generations[-1]):
+            self.current_gen += 1
+        else:
+            self.current_gen = 0
+
+        return self.current_gen >= self.similar_gen_threshold
 
 
 # Content
@@ -39,9 +65,9 @@ class ContentCriteria:
 
     def check(self, state: State):
         best_of_last = max(state.generations[-1], key=lambda x: x.performance)
-        if abs(best_of_last.performance - self.last) < self.delta:
+        if abs(best_of_last.performance - self.last) > self.delta:
             self.accum = 0
-            self.last = best_of_last
+            self.last = best_of_last.performance
             return True
         if self.accum < self.max_generations:
             self.accum += 1
