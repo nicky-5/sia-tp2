@@ -11,6 +11,7 @@ from src.items import POINTS_SUM
 from src.player import HEIGHT_MAX, HEIGHT_MIN
 from src.criteria import (State,
                           MaxGenerations,
+                          StructureCriteria,
                           MinFitness,
                           ContentCriteria)
 from src.config import (Config,
@@ -30,6 +31,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
+plt.rcParams['figure.dpi'] = 200
+
 
 if __name__ == "__main__":
     config_file = "config.json"
@@ -39,6 +42,7 @@ if __name__ == "__main__":
         lambda: MaxGenerations(config.max_generations))
     criteria_method.update({
         'max_generations': MaxGenerations(config.max_generations),
+        'structure_criteria': StructureCriteria(config.structure_criteria_stats_delta, config.structure_criteria_similar_gen_threshold, config.structure_criteria_individual_prop),
         'content_criteria': ContentCriteria(config.content_criteria_limit, config.content_criteria_delta),
         'min_fitness': MinFitness(config.min_fitness)
     })
@@ -55,19 +59,36 @@ if __name__ == "__main__":
     plt.figure()
     sns.set_style("whitegrid")
 
-    line, = plt.plot([], [], marker='o', linestyle='-')
+    line, = plt.plot(
+        [], [],
+        marker='',
+        markersize=2,
+        linestyle='-',
+        label='Best Performance')
     line_individuals, = plt.plot(
-        [], [], marker='.', linestyle='', label='Individual Performance')
+        [], [],
+        marker='.',
+        markersize=2,
+        linestyle='')
     line_mean, = plt.plot(
-        [], [], marker='.', linestyle='', label='Mean Performance')
+        [], [],
+        marker='',
+        markersize=2,
+        linestyle='-',
+        label='Mean Performance')
     line_median, = plt.plot(
-        [], [], marker='.', linestyle='', label='Median Performance')
+        [], [],
+        marker='.',
+        markersize=2,
+        linestyle='-',
+        label='Median Performance')
     plt.xlabel('Generation')
     plt.ylabel('Performance')
 
     # Set the axes limits
     plt.xlim(0, config.max_generations)
-    plt.ylim(0, 100)
+    plt.ylim(0, 65)
+    plt.legend()
 
     best_performance_data = []
     individual_performance_data = []
@@ -82,8 +103,8 @@ if __name__ == "__main__":
         individual_performances = [
             individual.performance for individual in state.generations[-1]]
         individual_performance_data.append(individual_performances)
-        # line_individuals.set_data(np.tile(range(1, gen_i + 1), (len(individual_performances), 1)).T.flatten(),
-        #                         np.array(individual_performance_data).flatten())
+        line_individuals.set_data(np.tile(range(1, gen_i + 1), (len(individual_performances), 1)).T.flatten(),
+                                  np.array(individual_performance_data).flatten())
         mean_performance_data.append(np.mean(individual_performances))
         line_mean.set_data(range(1, gen_i + 1), mean_performance_data)
         median_performance_data.append(np.median(individual_performances))

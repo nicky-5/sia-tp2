@@ -23,27 +23,27 @@ class MaxGenerations:
 
 
 # Structure Criteria
-class StructureCriteia:
-    def __init__(self, delta: float, stats_delta: List[float],similar_gen_threshold: int, similar_individual_prop: float):
-        self.delta = delta
+class StructureCriteria:
+    def __init__(self, stats_delta: List[float], similar_gen_threshold: int, similar_individual_prop: float):
         self.stats_delta = stats_delta
         self.similar_gen_threshold = similar_gen_threshold
         self.similar_individual_prop = similar_individual_prop
         self.current_gen = 0
 
     def check(self, state: State):
-        def match(individual : Character, other_individual: Character) -> bool:
+        def match(individual: Character, other_individual: Character) -> bool:
             i = 0
-            for stats1, stats2 in zip(individual.get_allels(),other_individual.get_allels()):
-                if(abs(stats1 - stats2) > self.stats_delta[i]):
+            for stats1, stats2 in zip(individual.get_allels(), other_individual.get_allels()):
+                if (abs(stats1 - stats2) > self.stats_delta[i]):
                     return False
-                i =+ 1
+                i = + 1
             return True
-
+        if len(state.generations) < 2:
+            return True
         similar_individuals = 0
         for individual in state.generations[-1]:
             for prev_individual in state.generations[-2]:
-                if(match(individual,prev_individual)):
+                if (match(individual, prev_individual)):
                     similar_individuals += 1
                     break
 

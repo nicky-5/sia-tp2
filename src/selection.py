@@ -64,11 +64,8 @@ def roulette(population: Population, selection_amount: int) -> Population:
 
     return selections
 
+
 # Universal
-
-# falta cambiar el r_j por el de universal, sigue igual a roullette
-
-
 def universal_selection(population: Population, selection_amount: int) -> Population:
     total = sum(character.performance for character in population)
     fitness = list(map(lambda character: (

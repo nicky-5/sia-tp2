@@ -49,6 +49,9 @@ class Config:
         self.max_generations = config["max_generations"]
         self.content_criteria_limit = config["content_criteria_limit"]
         self.content_criteria_delta = config["content_criteria_delta"]
+        self.structure_criteria_stats_delta = config["structure_criteria_stats_delta"]
+        self.structure_criteria_similar_gen_threshold = config["structure_criteria_similar_gen_threshold"]
+        self.structure_criteria_individual_prop = config["structure_criteria_individual_prop"]
         self.end_delta = config["end_delta"]
         self.min_fitness = config["min_fitness"]
 
