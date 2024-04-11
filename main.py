@@ -21,21 +21,31 @@ from src.config import (Config,
                         replacement_method,
                         mutation_method
                         )
+from src.classes import Class
 
 from heapq import heappush
 from collections import defaultdict
 
+import os
+import time
 import math
 import random
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import pandas as pd
 
 plt.rcParams['figure.dpi'] = 200
 
+data = pd.DataFrame(
+    columns=[
+        'gen_mean', 'gen_error',
+        'best_performance_mean', 'best_performance_error',
+        'time_mean', 'time_error'
+    ])
 
-if __name__ == "__main__":
-    config_file = "config.json"
+
+def execute(config_file):
     config = Config(config_file)
 
     criteria_method = defaultdict(
@@ -56,62 +66,62 @@ if __name__ == "__main__":
 
     state.generations.append(generation_0)
 
-    plt.figure()
-    sns.set_style("whitegrid")
+    # plt.figure()
+    # sns.set_style("whitegrid")
 
-    line, = plt.plot(
-        [], [],
-        marker='',
-        markersize=2,
-        linestyle='-',
-        label='Best Performance')
-    line_individuals, = plt.plot(
-        [], [],
-        marker='.',
-        markersize=2,
-        linestyle='')
-    line_mean, = plt.plot(
-        [], [],
-        marker='',
-        markersize=2,
-        linestyle='-',
-        label='Mean Performance')
-    line_median, = plt.plot(
-        [], [],
-        marker='.',
-        markersize=2,
-        linestyle='-',
-        label='Median Performance')
-    plt.xlabel('Generation')
-    plt.ylabel('Performance')
+    # line, = plt.plot(
+    #     [], [],
+    #     marker='',
+    #     markersize=2,
+    #     linestyle='-',
+    #     label='Best Performance')
+    # line_individuals, = plt.plot(
+    #     [], [],
+    #     marker='.',
+    #     markersize=2,
+    #     linestyle='')
+    # line_mean, = plt.plot(
+    #     [], [],
+    #     marker='',
+    #     markersize=2,
+    #     linestyle='-',
+    #     label='Mean Performance')
+    # line_median, = plt.plot(
+    #     [], [],
+    #     marker='.',
+    #     markersize=2,
+    #     linestyle='-',
+    #     label='Median Performance')
+    # plt.xlabel('Generation')
+    # plt.ylabel('Performance')
 
-    # Set the axes limits
-    plt.xlim(0, config.max_generations)
-    plt.ylim(0, 65)
-    plt.legend()
+    # # Set the axes limits
+    # plt.xlim(0, config.max_generations)
+    # plt.ylim(0, 65)
+    # plt.legend()
 
-    best_performance_data = []
-    individual_performance_data = []
-    mean_performance_data = []
-    median_performance_data = []
+    # best_performance_data = []
+    # individual_performance_data = []
+    # mean_performance_data = []
+    # median_performance_data = []
 
-    def update_plot(gen_i, state):
-        best_of_last = max(state.generations[-1], key=lambda x: x.performance)
-        best_performance_data.append(best_of_last.performance)
-        line.set_data(range(1, gen_i + 1), best_performance_data)
+    # def update_plot(gen_i, state):
+    #     best_of_last = max(state.generations[-1], key=lambda x: x.performance)
+    #     best_performance_data.append(best_of_last.performance)
+    #     line.set_data(range(1, gen_i + 1), best_performance_data)
 
-        individual_performances = [
-            individual.performance for individual in state.generations[-1]]
-        individual_performance_data.append(individual_performances)
-        line_individuals.set_data(np.tile(range(1, gen_i + 1), (len(individual_performances), 1)).T.flatten(),
-                                  np.array(individual_performance_data).flatten())
-        mean_performance_data.append(np.mean(individual_performances))
-        line_mean.set_data(range(1, gen_i + 1), mean_performance_data)
-        median_performance_data.append(np.median(individual_performances))
-        line_median.set_data(range(1, gen_i + 1), median_performance_data)
+    #     individual_performances = [
+    #         individual.performance for individual in state.generations[-1]]
+    #     individual_performance_data.append(individual_performances)
+    #     line_individuals.set_data(np.tile(range(1, gen_i + 1), (len(individual_performances), 1)).T.flatten(),
+    #                               np.array(individual_performance_data).flatten())
+    #     mean_performance_data.append(np.mean(individual_performances))
+    #     line_mean.set_data(range(1, gen_i + 1), mean_performance_data)
+    #     median_performance_data.append(np.median(individual_performances))
+    #     line_median.set_data(range(1, gen_i + 1), median_performance_data)
 
-        plt.pause(0.1)  # Pause to update the plot
-        return line,
+    #     plt.pause(0.1)  # Pause to update the plot
+    #     return line,
 
     while criteria_method[config.end_criteria].check(state):
         # Parent Selection
@@ -201,25 +211,84 @@ if __name__ == "__main__":
         )
 
         state.generations.append(new_gen)
-        print("GENERATION:", state.gen_i + 1)
-        best_of_last = max(state.generations[-1], key=lambda x: x.performance)
-        print("BEST OF LAST: ", best_of_last)
-        print("Best of Last performance: ", best_of_last.performance)
-        print(sum(best_of_last.points))
+
+        # print("GENERATION:", state.gen_i + 1)
+        # best_of_last = max(state.generations[-1], key=lambda x: x.performance)
+        # print("BEST OF LAST: ", best_of_last)
+        # print("Best of Last performance: ", best_of_last.performance)
+        # print(sum(best_of_last.points))
 
         state.gen_i += 1
-        update_plot(state.gen_i, state)
+        # update_plot(state.gen_i, state)
 
-    plt.show()
+    # plt.show()
     # print("LAST GENERATION: ", generations[-1])
-    best_of_last = max(state.generations[-1], key=lambda x: x.performance)
+    # best_of_last = max(state.generations[-1], key=lambda x: x.performance)
 
-    print("BEST OF LAST: ", best_of_last)
-    print("Best of Last performance: ", best_of_last.performance)
-    print(sum(best_of_last.points))
+    # print("BEST OF LAST: ", best_of_last)
+    # print("Best of Last performance: ", best_of_last.performance)
+    # print(sum(best_of_last.points))
 
     best_of_all = max(
         (individual for generation in state.generations for individual in generation), key=lambda x: x.performance)
-    print("BEST OF ALL: ", best_of_all)
-    print("Best of ALL performance: ", best_of_all.performance)
-    print(sum(best_of_all.points))
+    # print("BEST OF ALL: ", best_of_all)
+    # print("Best of ALL performance: ", best_of_all.performance)
+    # print(sum(best_of_all.points))
+    return state.gen_i, best_of_all.performance, config.population_class
+
+
+if __name__ == "__main__":
+    # config_file = "config.json"
+    # execute(config_file)
+
+    # Directory path
+    directory = 'configs/bolt'  # Replace this with your directory path
+
+    # List all files in the directory
+    files = os.listdir(directory)
+
+    iterations = 3
+    i = 0
+    # Print the names of all files
+    for file in files:
+        path = directory + '/' + file
+        times = []
+        gens = []
+        bests = []
+
+        class_ = Class.ARCHER
+        for j in range(0, iterations):
+            start = time.time()
+            gen, best, class_ = execute(path)
+            end = time.time()
+            times.append(end - start)
+            gens.append(gen)
+            bests.append(best)
+
+        # Calculate mean and standard error for time
+        mean_time = np.mean(times)
+        error_time = np.std(times) / np.sqrt(iterations)
+
+        # Calculate mean and standard error for gen
+        mean_gen = np.mean(gens)
+        error_gen = np.std(gens) / np.sqrt(iterations)
+
+        # Calculate mean and standard error for best
+        mean_best = np.mean(bests)
+        error_best = np.std(bests) / np.sqrt(iterations)
+
+        # Update data DataFrame with mean and error values
+        data.at[path, 'time_mean'] = mean_time
+        data.at[path, 'time_error'] = error_time
+        data.at[path, 'gen_mean'] = mean_gen
+        data.at[path, 'gen_error'] = error_gen
+        data.at[path, 'best_performance_mean'] = mean_best
+        data.at[path, 'best_performance_error'] = error_best
+        data.at[path, 'class'] = class_
+
+        i += 1
+        # if i > 10:
+        #     break
+        print(i)
+
+    data.to_csv('output.csv')
