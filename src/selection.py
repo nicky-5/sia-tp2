@@ -84,7 +84,7 @@ def universal_selection(population: Population, selection_amount: int) -> Popula
     j = 0
 
     for _ in range(selection_amount):
-        random_value = (random_init + j) / selection_amount - 1
+        random_value = (random_init + j) / selection_amount
         j += 1
 
         # Encuentra el individuo correspondiente al valor aleatorio
