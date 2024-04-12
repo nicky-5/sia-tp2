@@ -201,19 +201,19 @@ if __name__ == "__main__":
         )
 
         state.generations.append(new_gen)
-        print("GENERATION:", state.gen_i + 1)
+        # print("GENERATION:", state.gen_i + 1)
         best_of_last = max(state.generations[-1], key=lambda x: x.performance)
-        print("BEST OF LAST: ", best_of_last)
-        print("Best of Last performance: ", best_of_last.performance)
-        print(sum(best_of_last.points))
+        # print("BEST OF LAST: ", best_of_last)
+        # print("Best of Last performance: ", best_of_last.performance)
+        # print(sum(best_of_last.points))
 
         state.gen_i += 1
         update_plot(state.gen_i, state)
 
-    plt.show()
+
     # print("LAST GENERATION: ", generations[-1])
     best_of_last = max(state.generations[-1], key=lambda x: x.performance)
-
+    # print("estoy aca y esta es la ultima")
     print("BEST OF LAST: ", best_of_last)
     print("Best of Last performance: ", best_of_last.performance)
     print(sum(best_of_last.points))
@@ -222,4 +222,11 @@ if __name__ == "__main__":
         (individual for generation in state.generations for individual in generation), key=lambda x: x.performance)
     print("BEST OF ALL: ", best_of_all)
     print("Best of ALL performance: ", best_of_all.performance)
+    print("Strenth: ",best_of_all.points[0])
+    print("Agility: ",best_of_all.points[1])
+    print("Proficiency: ",best_of_all.points[2])
+    print("Resistance: ",best_of_all.points[3])
+    print("Health: ",best_of_all.points[4])
+    print("Height: ",best_of_all.height )
     print(sum(best_of_all.points))
+    plt.show()
