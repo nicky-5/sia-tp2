@@ -70,7 +70,6 @@ El archivo de configuración es un json con los diferentes hiperparametros. Un e
 
 A continuación se explicara cada hiperparametro.
 
-|------------------------------------------|-------------------------------------------------------------------------------------------------------|
 | Hiperparametro                           | Descripción                                                                                           |
 |------------------------------------------|-------------------------------------------------------------------------------------------------------|
 | population_size                          | Tamaño de la población                                                                                |
@@ -117,7 +116,6 @@ A continuación se explicara cada hiperparametro.
 | structure_criteria_similar_gen_threshold | Limite de generaciones similares estructuralmente                                                     |
 | structure_criteria_individual_prop       | Proporción de individuos similares para cortar                                                        |
 | min_fitness                              | Mínimo fitness para cuando el criterio de corte es de entorno óptimo                                  |
-|------------------------------------------|-------------------------------------------------------------------------------------------------------|
 
 ### Métodos de Selección
 
