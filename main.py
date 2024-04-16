@@ -242,7 +242,7 @@ if __name__ == "__main__":
     # execute(config_file)
 
     # Directory path
-    directory = 'ideal'  # Replace this with your directory path
+    directory = 'config'  # Replace this with your directory path
 
     # List all files in the directory
     files = os.listdir(directory)
@@ -258,9 +258,10 @@ if __name__ == "__main__":
         gens = []
         bests = []
 
+        print("Iterating file", i + 1, ":", path)
         class_ = Class.ARCHER
         for j in range(0, iterations):
-            print(j)
+            print("Iteration: ", j)
             start = time.time()
             gen, best, class_ = execute(path)
             end = time.time()
@@ -292,6 +293,5 @@ if __name__ == "__main__":
         i += 1
         # if i > 10:
         #     break
-        print(i)
 
     data.to_csv('output.csv')
