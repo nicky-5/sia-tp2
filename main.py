@@ -242,15 +242,17 @@ if __name__ == "__main__":
     # execute(config_file)
 
     # Directory path
-    directory = 'configs/bolt'  # Replace this with your directory path
+    directory = 'ideal'  # Replace this with your directory path
 
     # List all files in the directory
     files = os.listdir(directory)
 
-    iterations = 3
+    iterations = 100
     i = 0
     # Print the names of all files
     for file in files:
+        if file[0] == '.':
+            continue
         path = directory + '/' + file
         times = []
         gens = []
@@ -258,6 +260,7 @@ if __name__ == "__main__":
 
         class_ = Class.ARCHER
         for j in range(0, iterations):
+            print(j)
             start = time.time()
             gen, best, class_ = execute(path)
             end = time.time()

@@ -16,7 +16,7 @@ print(sorted_data)
 
 # Assuming 'data' is your DataFrame
 top_10_per_class = data.groupby('class').apply(lambda x: x.reset_index(
-).nlargest(10, 'best_performance_mean').sort_values(by='time_mean'))
+).nlargest(50, 'best_performance_mean').sort_values(by='time_mean'))
 
 # Display the top ten entries of each class
 print(top_10_per_class.to_string())
